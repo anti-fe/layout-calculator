@@ -9,12 +9,12 @@ const title = document.getElementsByClassName('h1')[0],
     numberItems = document.querySelectorAll('.other-items.number'),
     inputRange = document.querySelector('input[type=range]');
 
-
 const total = document.getElementsByClassName('total-input')[0],
     totalCountInput = document.getElementsByClassName('total-input')[1],
     totalCountOtherInput = document.getElementsByClassName('total-input')[2],
     totalFullCountInput = document.getElementsByClassName('total-input')[3],
     totalCountRollbackInput = document.getElementsByClassName('total-input')[4],
+    resInps = document.querySelectorAll('.total-input'),
     cmsItem = document.querySelector('#cms-open'),
     cmsSelect = document.querySelector('.hidden-cms-variants'),
     cmsSelectItems = cmsSelect.querySelector('#cms-select'),
@@ -40,6 +40,7 @@ const appData = {
         buttonPlus.addEventListener('click', addScreenBlock);
         inputRange.addEventListener('input', getRollback);
         startBtn.addEventListener('click', startRes);
+        resetBtn.addEventListener('click', reloadForm);
     }
 }
 
@@ -74,10 +75,66 @@ function startRes() {
         priceNumRes();
         getScreens();
         getRes();
+        blockRes();
     }
     
 }
+function reloadForm() {
+    screens = document.querySelectorAll('.screen');
+    let screensSelects = document.querySelectorAll('.screen select');
+    let otherItems = document.querySelectorAll('.other-items .main-controls__checkbox .custom-checkbox');
+    //Убираем disable и value у input 
+    screens.forEach(el => {
+        el.querySelector('input').disabled = false;
+        el.querySelector('input').value = "";
+    }) 
+    //Убираем disable и value у select 
+    screensSelects.forEach(el => {
+        el.disabled = false;
+        el.value = '';
+    }) 
+    //Ставим начальное value у inputs в результатах 
+    resInps.forEach(el => {
+        el.value = '0';
+    })
+    //Убираем disable и checked у checkbox 
+    otherItems.forEach(el => {
+        el.disabled = false;
+        if(el.checked) {
+            el.checked = false;
+        }
+    })
+    //Ставим начальное значение у inputRange
+    inputRange.value = '0';
+    inputRangeValue.innerHTML = inputRange.value;
 
+    //Убираем кнопку "Сброс"
+    buttonPlus.addEventListener('click', addScreenBlock);
+    resetBtn.style.display = 'none';
+}
+function blockRes() {
+    screens = document.querySelectorAll('.screen');
+    let screensSelects = document.querySelectorAll('.screen select');
+    let otherItems = document.querySelectorAll('.other-items .main-controls__checkbox .custom-checkbox');
+    //Добавляем кнопку "Сброс"
+    resetBtn.style.display = 'block';
+    
+    //Добавляем disable к input
+    screens.forEach(el => {
+        el.querySelector('input').disabled = true;
+    }) 
+
+    //Добавляем disable к select
+    screensSelects.forEach(el => {
+        el.disabled = true;
+    }) 
+    //Добавляем disable к checkbox
+    otherItems.forEach(el => {
+        el.disabled = true;
+    })
+    //Убираем возможность добавлять новые экраны
+    buttonPlus.removeEventListener('click', addScreenBlock);
+}
 function getRes() {
     total.value = appData.screenPrice;
     totalCountInput.value = appData.screens;
@@ -85,7 +142,6 @@ function getRes() {
     totalFullCountInput.value = Number(total.value) + Number(totalCountOtherInput.value);
     totalCountRollbackInput.value = totalFullCountInput.value - (totalFullCountInput.value * appData.rollback / 100);
 }
-
 function addScreenBlock() {
     screens.forEach(item => {
         let formScreen = item.cloneNode(true);
@@ -106,13 +162,11 @@ function addScreenBlock() {
 
 
 }
-
 function getRollback() {
     // Онлайн значение input range
     inputRangeValue.innerHTML = `${inputRange.value}%`;
     appData.rollback = inputRange.value;
 }
-
 function pricePercentRes() {
     percentItems.forEach(num => {
         const checkbox = num.querySelector('input[type=checkbox]');
@@ -122,7 +176,6 @@ function pricePercentRes() {
         }
     })
 }
-
 function priceNumRes() {
     numberItems.forEach(num => {
         const checkbox = num.querySelector('input[type=checkbox]');
@@ -132,7 +185,6 @@ function priceNumRes() {
         }
     })
 }
-
 function getScreens() {
     screens.forEach(num => {
         let contScreen = num.querySelector('.main-controls__input').querySelector('input').value;
