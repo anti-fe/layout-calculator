@@ -45,10 +45,25 @@ const appData = {
 
 function startRes() {
     // Расчет результатов
-    pricePercentRes();
-    priceNumRes();
-    getScreens();
-    getRes();
+    screens = document.querySelectorAll('.screen');
+    let screensInps = document.querySelectorAll('.screen input');
+    let trueScreens = 0;
+    //Проверка input на пустое значение
+    screens.forEach(el=> {
+        if(el.querySelector('input').value == ""){
+            return;
+        } else {
+            trueScreens += 1;
+        }
+    }) 
+    // Если количество не пустых input будет равно количеству input
+    if(trueScreens == screensInps.length) {
+        pricePercentRes();
+        priceNumRes();
+        getScreens();
+        getRes();
+    }
+    
 }
 
 function getRes() {
