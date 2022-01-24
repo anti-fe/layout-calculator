@@ -37,71 +37,82 @@ const appData = {
     isEmpty: false,
     cms: 1,
     init: function () {
-        buttonPlus.addEventListener('click', this.addScreenBlock);
-        inputRange.addEventListener('input', this.getRollback);
-        startBtn.addEventListener('click', this.startRes);
-    },
-    startRes: function () {
-        // Расчет результатов
-        this.pricePercentRes;
-        this.priceNumRes;
-        this.getScreens;
-        this.getRes;
-    },
-    getRes: function () {
-        total.value = appData.screenPrice;
-        totalCountInput.value = appData.screens;
-        totalCountOtherInput.value = (total.value * appData.servicePricesPercent / 100 + appData.servicePricesNumber).toFixed(0);
-        totalFullCountInput.value = Number(total.value) + Number(totalCountOtherInput.value);
-        totalCountRollbackInput.value = totalFullCountInput.value - (totalFullCountInput.value * appData.rollback / 100);
-    },
-    addScreenBlock: function () {
-        screens.forEach(item => {
-            let formScreen = item.cloneNode(true);
-            mainControlsViews.insertBefore(formScreen, buttonPlus);
-            formScreen.querySelector('.main-controls__input').querySelector('input').value = '';
-    
-            //     let closeControls = document.createElement('button');
-            //     closeControls.classList.add('close-btn');
-            //     closeControls.innerHTML = '-';
-            //     formScreen.querySelector('.main-controls__input').querySelector('input').appendChild(closeControls);
-            // })
-            // // При клике удаляет форму
-            // closeControls.addEventListener('click', ()=> {
-            //     formScreen.remove();
-        })
-    },
-    getRollback: function () {
-        // Онлайн значение input range
-        inputRangeValue.innerHTML = `${inputRange.value}%`;
-        appData.rollback = inputRange.value;
-    },
-    pricePercentRes: function () {
-        percentItems.forEach(num => {
-            const checkbox = num.querySelector('input[type=checkbox]');
-            const price = num.querySelector('input[type=text]');
-            if (checkbox.checked) {
-                appData.servicePricesPercent += Number(price.value);
-            }
-        })
-    },
-    priceNumRes: function () {
-        numberItems.forEach(num => {
-            const checkbox = num.querySelector('input[type=checkbox]');
-            const price = num.querySelector('input[type=text]');
-            if (checkbox.checked) {
-                appData.servicePricesNumber += Number(price.value);
-            }
-        })
-    },
-    getScreens: function () {
-        screens.forEach(num => {
-            let contScreen = num.querySelector('.main-controls__input').querySelector('input').value;
-            let contScreenSelect = num.querySelector('.main-controls__select').querySelector('select').value;
-            appData.screens += contScreen;
-            appData.screenPrice += contScreen * contScreenSelect;
-        })
-    },
+        buttonPlus.addEventListener('click', addScreenBlock);
+        inputRange.addEventListener('input', getRollback);
+        startBtn.addEventListener('click', startRes);
+    }
+}
+
+function startRes() {
+    // Расчет результатов
+    pricePercentRes();
+    priceNumRes();
+    getScreens();
+    getRes();
+}
+
+function getRes() {
+    total.value = appData.screenPrice;
+    totalCountInput.value = appData.screens;
+    totalCountOtherInput.value = (total.value * appData.servicePricesPercent / 100 + appData.servicePricesNumber).toFixed(0);
+    totalFullCountInput.value = Number(total.value) + Number(totalCountOtherInput.value);
+    totalCountRollbackInput.value = totalFullCountInput.value - (totalFullCountInput.value * appData.rollback / 100);
+}
+
+function addScreenBlock() {
+    screens.forEach(item => {
+        let formScreen = item.cloneNode(true);
+        mainControlsViews.insertBefore(formScreen, buttonPlus);
+        formScreen.querySelector('.main-controls__input').querySelector('input').value = '';
+
+        //     let closeControls = document.createElement('button');
+        //     closeControls.classList.add('close-btn');
+        //     closeControls.innerHTML = '-';
+        //     formScreen.querySelector('.main-controls__input').querySelector('input').appendChild(closeControls);
+        // })
+        // // При клике удаляет форму
+        // closeControls.addEventListener('click', ()=> {
+        //     formScreen.remove();
+    })
+
+
+
+
+}
+
+function getRollback() {
+    // Онлайн значение input range
+    inputRangeValue.innerHTML = `${inputRange.value}%`;
+    appData.rollback = inputRange.value;
+}
+
+function pricePercentRes() {
+    percentItems.forEach(num => {
+        const checkbox = num.querySelector('input[type=checkbox]');
+        const price = num.querySelector('input[type=text]');
+        if (checkbox.checked) {
+            appData.servicePricesPercent += Number(price.value);
+        }
+    })
+}
+
+function priceNumRes() {
+    numberItems.forEach(num => {
+        const checkbox = num.querySelector('input[type=checkbox]');
+        const price = num.querySelector('input[type=text]');
+        if (checkbox.checked) {
+            appData.servicePricesNumber += Number(price.value);
+        }
+    })
+}
+
+function getScreens() {
+    screens.forEach(num => {
+        let contScreen = num.querySelector('.main-controls__input').querySelector('input').value;
+        let contScreenSelect = num.querySelector('.main-controls__select').querySelector('select').value;
+        appData.screens += contScreen;
+        appData.screenPrice += contScreen * contScreenSelect;
+    })
 }
 
 appData.init();
