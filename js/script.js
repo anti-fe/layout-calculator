@@ -44,20 +44,32 @@ const appData = {
 }
 
 function startRes() {
-    // Расчет результатов
     screens = document.querySelectorAll('.screen');
     let screensInps = document.querySelectorAll('.screen input');
-    let trueScreens = 0;
+    let screensSelects = document.querySelectorAll('.screen select');
+    let trueScreensInp = 0;
+    let trueScreensSelect = 0;
+
+    //Проверка select на пустое значение
+    screensSelects.forEach(el => {
+        if(el.value == "") {
+            return;
+        } else {
+            trueScreensSelect += 1;
+        }
+    })
     //Проверка input на пустое значение
-    screens.forEach(el=> {
+    screens.forEach(el => {
         if(el.querySelector('input').value == ""){
             return;
         } else {
-            trueScreens += 1;
+            trueScreensInp += 1;
         }
     }) 
-    // Если количество не пустых input будет равно количеству input
-    if(trueScreens == screensInps.length) {
+    // Если количество не пустых input будет равно кол-ву input
+    // И если количество не пустых select будет равно кол-ву select
+    if(trueScreensInp == screensInps.length && trueScreensSelect == screensSelects.length) {
+        // Расчет результатов
         pricePercentRes();
         priceNumRes();
         getScreens();
