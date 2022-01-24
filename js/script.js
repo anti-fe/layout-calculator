@@ -27,7 +27,6 @@ const appData = {
     title: '',
     screens: [],
     screenPrice: 0,
-    adaptive: true,
     rollback: 0,
     servicePricesPercent: 0,
     servicePricesNumber: 0,
@@ -35,10 +34,12 @@ const appData = {
     servicePercentPrice: 0,
     servicesPercent: {},
     isEmpty: false,
-    cms: 1,
+    cmsProcent: 0,
     init: function () {
         buttonPlus.addEventListener('click', addScreenBlock);
         inputRange.addEventListener('input', getRollback);
+        cmsItem.addEventListener('change', getCms);
+        cmsSelectItems.addEventListener('change', getCmsItem);
         startBtn.addEventListener('click', startRes);
         resetBtn.addEventListener('click', reloadForm);
     }
@@ -74,6 +75,7 @@ function startRes() {
         pricePercentRes();
         priceNumRes();
         getScreens();
+        setCmsProcent();
         getRes();
         blockRes();
     }
@@ -104,6 +106,15 @@ function reloadForm() {
             el.checked = false;
         }
     })
+    //Убираем disable у checkbox, select и input CMS
+    cmsItem.disabled = false;
+    cmsItem.checked = false;
+    getCms();
+    cmsSelectItems.value = '';
+    cmsSelectItems.disabled = false;
+    cmsInputItems.querySelector('input').disabled = false;
+    cmsInputItems.style.display = 'none';
+    cmsInputItems.querySelector('input').value = '';
     //Ставим начальное значение у inputRange
     inputRange.value = '0';
     inputRangeValue.innerHTML = inputRange.value;
@@ -128,17 +139,45 @@ function blockRes() {
     screensSelects.forEach(el => {
         el.disabled = true;
     }) 
+
     //Добавляем disable к checkbox
     otherItems.forEach(el => {
         el.disabled = true;
     })
+    //Добавляем disable к checkbox, select и input CMS
+    cmsItem.disabled = true;
+    cmsSelectItems.disabled = true;
+    cmsInputItems.querySelector('input').disabled = true;
     //Убираем возможность добавлять новые экраны
     buttonPlus.removeEventListener('click', addScreenBlock);
+}
+function setCmsProcent() {
+    if(cmsSelectItems.value == 50) {
+        appData.cmsProcent = 50;
+    } else if(cmsSelectItems.value == 'other'){
+        appData.cmsProcent = cmsInputItems.querySelector('input').value;
+    }
+}
+function getCms() {
+    if(cmsItem.checked) {
+        cmsSelect.style.display = 'block';
+    } else {
+        cmsSelect.style.display = 'none';
+    }
+}
+function getCmsItem() {
+    if(cmsSelectItems.value == 'other') {
+        cmsInputItems.style.display = 'block';
+    } else {
+        cmsInputItems.style.display = 'none';
+    }
 }
 function getRes() {
     total.value = appData.screenPrice;
     totalCountInput.value = appData.screens;
-    totalCountOtherInput.value = (total.value * appData.servicePricesPercent / 100 + appData.servicePricesNumber).toFixed(0);
+    totalCountOtherInput.value = (total.value * appData.servicePricesPercent / 100 
+        + appData.servicePricesNumber
+        + (total.value * appData.cmsProcent / 100)).toFixed(0);
     totalFullCountInput.value = Number(total.value) + Number(totalCountOtherInput.value);
     totalCountRollbackInput.value = totalFullCountInput.value - (totalFullCountInput.value * appData.rollback / 100);
 }
